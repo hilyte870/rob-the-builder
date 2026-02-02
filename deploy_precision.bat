@@ -1,51 +1,40 @@
 @echo off
 setlocal
 echo ==========================================
-echo 🛠️ ROB IDE: PUSHING DEPLOYMENT FINAL FIX
+echo 💎 ROB IDE: FINAL FUNCTIONAL LAUNCH
 echo ==========================================
 echo.
 
-:: 1. Verification
-echo [1/3] Verifying Hotfix...
+:: 1. Force Local Build
+echo [1/3] Final Verification...
 call npm run build
 if %errorlevel% neq 0 (
-    echo.
-    echo ❌ LOCAL BUILD FAILED. Check your code.
-    pause
-    exit /b %errorlevel%
-)
-echo ✅ Verification Passed.
-
-:: 2. Git Commit
-echo [2/3] Preparing Sync...
-git add .
-git commit -m "fix: total rebuild of runtime sandbox for robust functional architecture"
-echo ✅ Commit ready.
-
-:: 3. GitHub Push
-echo [3/3] Finalizing GitHub Remote...
-set /p PAT="Enter your GitHub Token (ghp_): "
-
-if "%PAT%"=="" (
-    echo ❌ Token cannot be empty.
+    echo ❌ FAILED.
     pause
     exit /b 1
 )
+echo ✅ Engine Ready.
+
+:: 2. Sync
+echo [2/3] Preparing functional payload...
+git add .
+git commit -m "feat: implement high-fidelity functional generation and robust sandbox bootstrapper"
+echo ✅ Package sealed.
+
+:: 3. Push
+echo [3/3] Deploying to Cloud...
+set /p PAT="Enter your GitHub Token: "
+if "%PAT%"=="" ( exit /b 1 )
 
 git remote remove origin >nul 2>&1
-echo 🚀 Launching functional fix...
 git push https://hilyte870:%PAT%@github.com/hilyte870/rob-the-builder.git main --force
 
-if %errorlevel% neq 0 (
-    echo.
-    echo ❌ PUSH FAILED.
-    pause
-    exit /b %errorlevel%
+if %errorlevel% equ 0 (
+    echo ✅ SUCCESS!
+) else (
+    echo ❌ FAIL.
 )
-echo ✅ DEPLOYMENT SUCCESSFUL.
 
 echo.
-echo ==========================================
-echo 🌟 MISSION SUCCESS: REFRESH VERCEL IN 60S
 echo ==========================================
 pause
