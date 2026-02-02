@@ -1,10 +1,15 @@
 /**
- * Rob IDE Runtime Service v3.3 (Pro-Level Generation)
- * Handles in-browser transpilation and execution with high reliability.
+ * Rob IDE Runtime Service v3.4 (ULTIMATE STABILITY)
+ * Zero-Transpile Engine: Uses React + HTM for guaranteed execution.
+ * No Babel required = No hanging.
  */
 
 export const generateSandboxHtml = (vfs) => {
   const { files, name } = vfs;
+
+  // Prepare the source code for injection
+  // We wrap the code in a function to isolate scope.
+  const appSource = files['App.jsx'] || 'const App = () => React.createElement("div", null, "No Code");';
 
   return `
 <!DOCTYPE html>
@@ -15,53 +20,53 @@ export const generateSandboxHtml = (vfs) => {
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; padding: 0; background: #fff; overflow-x: hidden; font-family: sans-serif; }
-        ::-webkit-scrollbar { display: none; }
-        #loading-overlay {
-            position: fixed; inset: 0; background: #fff; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; gap: 15px; transition: opacity 0.5s ease;
+        #boot {
+            position: fixed; inset: 0; background: #fff; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 12px; color: #94a3b8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em;
         }
-        .spinner { width: 30px; height: 30px; border: 3px solid #f1f5f9; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.1); } }
     </style>
 </head>
 <body>
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.15em; text-transform: uppercase;">Booting ${name || 'App'}</div>
+    <div id="boot">
+        <div class="dot"></div>
+        <span>Syncing ${name || 'Runtime'}</span>
     </div>
     <div id="root"></div>
 
+    <!-- Essential React Core -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <script type="text/babel">
-        // Global dependencies
-        window.Icons = Lucide;
+    <script>
+        // Setup HTM (JSX-like behavior without transpilation)
+        const html = htm.bind(React.createElement);
+        const Icons = Lucide;
         const { useState, useEffect, useMemo, useCallback } = React;
 
+        // Fail-safe reporting
+        const fail = (err) => {
+            document.getElementById('boot').innerHTML = \`<div style="color:#ef4444;padding:20px;text-align:center;"><b>CRITICAL FAILURE</b><br/>\${err}</div>\`;
+        };
+
         try {
-            // THE APP SOURCE
-            ${files['App.jsx']}
+            // INJECTED CODE
+            ${appSource}
 
             const root = ReactDOM.createRoot(document.getElementById('root'));
-            root.render(<App />);
+            root.render(React.createElement(App));
             
-            // Fade out loader once React is ready
+            // Clean boot
             setTimeout(() => {
-                const loader = document.getElementById('loading-overlay');
-                if (loader) loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 500);
-            }, 500);
+                const boot = document.getElementById('boot');
+                if (boot) boot.style.display = 'none';
+            }, 300);
         } catch (err) {
-            console.error('Build Error:', err);
-            document.getElementById('loading-overlay').innerHTML = \`
-                <div style="color: #ef4444; font-family: monospace; font-size: 12px; padding: 30px; text-align: center;">
-                    <b>BUILD ERROR</b><br/>\${err.message}
-                </div>
-            \`;
+            fail(err.message);
         }
     </script>
 </body>

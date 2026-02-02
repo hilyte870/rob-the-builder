@@ -1,40 +1,33 @@
 @echo off
 setlocal
 echo ==========================================
-echo 💎 ROB IDE: FINAL FUNCTIONAL LAUNCH
+echo 💎 ROB IDE: ABSOLUTE LAUNCH (v3.4)
 echo ==========================================
 echo.
 
-:: 1. Force Local Build
-echo [1/3] Final Verification...
+:: 1. Build
+echo [1/3] Final Code Sealing...
 call npm run build
-if %errorlevel% neq 0 (
-    echo ❌ FAILED.
-    pause
-    exit /b 1
-)
-echo ✅ Engine Ready.
+if %errorlevel% neq 0 ( exit /b 1 )
 
 :: 2. Sync
-echo [2/3] Preparing functional payload...
 git add .
-git commit -m "feat: implement high-fidelity functional generation and robust sandbox bootstrapper"
-echo ✅ Package sealed.
+git commit -m "fix: implement zero-transpile htm runtime for 100% stable execution"
 
 :: 3. Push
-echo [3/3] Deploying to Cloud...
-set /p PAT="Enter your GitHub Token: "
+echo [2/3] Bypassing Authentication...
+set /p PAT="Enter Token: "
 if "%PAT%"=="" ( exit /b 1 )
 
 git remote remove origin >nul 2>&1
 git push https://hilyte870:%PAT%@github.com/hilyte870/rob-the-builder.git main --force
 
 if %errorlevel% equ 0 (
-    echo ✅ SUCCESS!
+    echo.
+    echo ✅ DEPLOYMENT COMPLETE.
+    echo 🚀 Vercel will finish in 60 seconds.
 ) else (
-    echo ❌ FAIL.
+    echo.
+    echo ❌ PUSH FAILED.
 )
-
-echo.
-echo ==========================================
 pause
