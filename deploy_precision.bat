@@ -1,39 +1,31 @@
 @echo off
 setlocal
 echo ==========================================
-echo 🛠️ ROB IDE: PRECISION DEPLOYMENT V3
+echo 🛠️ ROB IDE: PRECISION HOTFIX V3.1
 echo ==========================================
 echo.
 
-:: 1. Force Clean Git State
-echo [1/5] Cleaning Repository...
-if exist vercel.json del /f /q vercel.json
-echo ✅ Repository cleaned.
-
-:: 2. Verification Build
-echo [2/5] Verifying "Rob IDE" Build...
+:: 1. Verification Build
+echo [1/4] Verifying Hotfix...
 call npm install
 call npm run build
 if %errorlevel% neq 0 (
     echo.
-    echo ❌ BUILD FAILED: IDE verification failed locally.
+    echo ❌ BUILD FAILED: Hotfix verification failed locally.
     pause
-    exit /b %errorlevel%
+    exit b %errorlevel%
 )
-echo ✅ IDE Engine Verified.
+echo ✅ Engine Hotfix Verified.
 
-:: 3. Git Fix
-echo [3/5] Syncing IDE Workspace...
-if not exist .git (
-    git init
-)
+:: 2. Git Sync
+echo [2/4] Syncing Runtime Hotfix...
 git add .
-git commit -m "feat: upgrade to Rob IDE 3.0 - Professional Functional Engine"
-echo ✅ Workspace synced.
+git commit -m "fix: resolve white screen by fixing sandbox icon injection and adding error boundaries"
+echo ✅ Runtime synced.
 
-:: 4. GitHub Push
-echo [4/5] Connecting to GitHub...
-set /p PAT="Enter your GitHub Personal Access Token (ghp_): "
+:: 3. GitHub Push
+echo [3/4] Connecting to GitHub...
+set /p PAT="Enter your GitHub Token (Starts with ghp_): "
 
 if "%PAT%"=="" (
     echo ❌ Token cannot be empty.
@@ -42,23 +34,20 @@ if "%PAT%"=="" (
 )
 
 git remote remove origin >nul 2>&1
-echo 🚀 Launching functional payload...
+echo 🚀 Launching precision fix...
 git push https://hilyte870:%PAT%@github.com/hilyte870/rob-the-builder.git main --force
 
 if %errorlevel% neq 0 (
     echo.
-    echo ❌ PUSH FAILED: Check your PAT or repository settings.
+    echo ❌ PUSH FAILED: Check your PAT permissions.
     pause
     exit /b %errorlevel%
 )
-echo ✅ Push Successful.
+echo ✅ Fix Deployed Successfully.
 
-:: 5. Deployment Finalization
-echo [5/5] Finalizing Cloud Launch...
-echo ^> Check GitHub: https://github.com/hilyte870/rob-the-builder
-echo ^> Check Vercel: https://vercel.com/hilyte870/rob-the-builder
+:: 4. Finalization
+echo [4/4] Cloud Update Finalized.
+echo ^> Refresh Vercel in 60 seconds.
 echo.
-echo ==========================================
-echo 💎 ROB IDE DEPLOYMENT COMPLETE
 echo ==========================================
 pause

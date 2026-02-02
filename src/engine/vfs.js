@@ -4,22 +4,19 @@
  */
 
 export const createInitialWorkspace = (description, blueprint) => {
-    const primaryColor = blueprint.style.primaryColor || '#7EDBFF';
+  const primaryColor = blueprint.style.primaryColor || '#7EDBFF';
 
-    return {
-        id: blueprint.id,
-        name: blueprint.name,
-        description: description,
-        files: {
-            'App.jsx': `
-import React from 'react';
-import { Sparkles } from 'lucide-react';
-
-export default function App() {
+  return {
+    id: blueprint.id,
+    name: blueprint.name,
+    description: description,
+    files: {
+      'App.jsx': `
+const App = () => {
   return (
     <div className="p-8 min-h-screen bg-white font-sans text-slate-900 border-x border-slate-100 flex flex-col items-center justify-center gap-6">
-      <div className="w-16 h-16 bg-[${primaryColor}]10 rounded-2xl flex items-center justify-center text-[${primaryColor}]">
-        <Sparkles size={32} />
+      <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500">
+        <Icons.Sparkles size={32} />
       </div>
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold tracking-tight">${blueprint.name}</h1>
@@ -29,12 +26,16 @@ export default function App() {
       </div>
       <div className="w-full max-w-[300px] h-[1px] bg-slate-100" />
       <div className="flex flex-wrap justify-center gap-2">
-        ${blueprint.pages.map(p => `<span className="px-3 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold uppercase rounded-full border border-slate-100">${p.name}</span>`).join('\n        ')}
+        ${blueprint.pages.map(p => `
+        <span className="px-3 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold uppercase rounded-full border border-slate-100">
+          ${p.name}
+        </span>`).join('')}
       </div>
     </div>
   );
-}`,
-            'styles.css': `
+};
+`,
+      'styles.css': `
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -48,22 +49,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 `,
-            'constants.js': `
+      'constants.js': `
 export const APP_ID = "${blueprint.id}";
 export const THEME_COLOR = "${primaryColor}";
 `
-        },
-        updatedAt: new Date().toISOString()
-    };
+    },
+    updatedAt: new Date().toISOString()
+  };
 };
 
 export const updateFile = (workspace, filename, content) => {
-    return {
-        ...workspace,
-        files: {
-            ...workspace.files,
-            [filename]: content
-        },
-        updatedAt: new Date().toISOString()
-    };
+  return {
+    ...workspace,
+    files: {
+      ...workspace.files,
+      [filename]: content
+    },
+    updatedAt: new Date().toISOString()
+  };
 };
