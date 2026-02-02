@@ -26,31 +26,40 @@ git add .
 git commit -m "feat: initial high-precision scaffold for Rob The Builder"
 echo ✅ Git Initialized.
 
-:: 3. GitHub Push
+:: 3. GitHub Push (Direct Token Injection)
 echo [3/4] Connecting to GitHub...
 echo.
 echo ^> Repository: https://github.com/hilyte870/rob-the-builder
 echo.
 
+set /p PAT="Enter your GitHub Personal Access Token (starts with ghp_): "
+
+if "%PAT%"=="" (
+    echo ❌ Token cannot be empty.
+    pause
+    exit /b 1
+)
+
 :: Handle existing remote origin
 git remote remove origin >nul 2>&1
-git remote add origin https://github.com/hilyte870/rob-the-builder.git
-
-git branch -M main
 
 echo.
-echo ⚠️  IMPORTANT: GitHub requires a Personal Access Token (PAT), NOT your password.
-echo ⚠️  If you don't have one, please follow the instructions I sent in the chat.
-echo.
+echo 🚀 Attempting precision push...
+git push https://hilyte870:%PAT%@github.com/hilyte870/rob-the-builder.git main --force
 
-git push -u origin main
 if %errorlevel% neq 0 (
     echo.
-    echo ❌ PUSH FAILED: Check your GitHub PAT permissions.
+    echo ❌ PUSH FAILED:
+    echo 1. Ensure the token has "repo" permissions.
+    echo 2. Ensure your username is "hilyte870".
+    echo 3. Check for any extra spaces in the token.
     pause
     exit /b %errorlevel%
 )
 echo ✅ Push Successful.
+
+:: Clean up remote to avoid storing token in .git/config
+git remote add origin https://github.com/hilyte870/rob-the-builder.git
 
 :: 4. Deployment Check
 echo [4/4] Finalizing...
