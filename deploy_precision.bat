@@ -1,31 +1,30 @@
 @echo off
 setlocal
 echo ==========================================
-echo 🛠️ ROB IDE: PRECISION HOTFIX V3.1
+echo 🛠️ ROB IDE: PUSHING DEPLOYMENT FINAL FIX
 echo ==========================================
 echo.
 
-:: 1. Verification Build
-echo [1/4] Verifying Hotfix...
-call npm install
+:: 1. Verification
+echo [1/3] Verifying Hotfix...
 call npm run build
 if %errorlevel% neq 0 (
     echo.
-    echo ❌ BUILD FAILED: Hotfix verification failed locally.
+    echo ❌ LOCAL BUILD FAILED. Check your code.
     pause
-    exit b %errorlevel%
+    exit /b %errorlevel%
 )
-echo ✅ Engine Hotfix Verified.
+echo ✅ Verification Passed.
 
-:: 2. Git Sync
-echo [2/4] Syncing Runtime Hotfix...
+:: 2. Git Commit
+echo [2/3] Preparing Sync...
 git add .
-git commit -m "fix: resolve white screen by fixing sandbox icon injection and adding error boundaries"
-echo ✅ Runtime synced.
+git commit -m "fix: total rebuild of runtime sandbox for robust functional architecture"
+echo ✅ Commit ready.
 
 :: 3. GitHub Push
-echo [3/4] Connecting to GitHub...
-set /p PAT="Enter your GitHub Token (Starts with ghp_): "
+echo [3/3] Finalizing GitHub Remote...
+set /p PAT="Enter your GitHub Token (ghp_): "
 
 if "%PAT%"=="" (
     echo ❌ Token cannot be empty.
@@ -34,20 +33,19 @@ if "%PAT%"=="" (
 )
 
 git remote remove origin >nul 2>&1
-echo 🚀 Launching precision fix...
+echo 🚀 Launching functional fix...
 git push https://hilyte870:%PAT%@github.com/hilyte870/rob-the-builder.git main --force
 
 if %errorlevel% neq 0 (
     echo.
-    echo ❌ PUSH FAILED: Check your PAT permissions.
+    echo ❌ PUSH FAILED.
     pause
     exit /b %errorlevel%
 )
-echo ✅ Fix Deployed Successfully.
+echo ✅ DEPLOYMENT SUCCESSFUL.
 
-:: 4. Finalization
-echo [4/4] Cloud Update Finalized.
-echo ^> Refresh Vercel in 60 seconds.
 echo.
+echo ==========================================
+echo 🌟 MISSION SUCCESS: REFRESH VERCEL IN 60S
 echo ==========================================
 pause
